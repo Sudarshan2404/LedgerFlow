@@ -1,7 +1,10 @@
 import type { Request, Response } from "express";
 import { Prisma } from "@prisma/client";
-import { email, parseAsync, success, z } from "zod";
+import { email, number, parseAsync, success, z } from "zod";
 import { prisma } from "../config/prisma.js";
+import bcrypt from "bcrypt";
+
+const salt_rounds: number = Number(process.env.SALT_ROUNDS);
 
 const registerSchema = z.object({
   email: z.email().toLowerCase(),
@@ -73,10 +76,13 @@ export const Login = async (req: Request, res: Response) => {
         .status(400)
         .json({ success: false, message: "User already exist" });
     }
+
+    const hashedPass = await bcrypt.hash(password, salt_rounds);
+
     const user = await prisma.user.create({
       data: {
         email,
-        password,
+        password: hashedPass,
         name,
       },
     });
