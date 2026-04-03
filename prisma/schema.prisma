@@ -14,8 +14,9 @@ datasource db {
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
+  password  String
   name      String   
-  role      Role
+  role      Role     @default(VIEWER)
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
 
