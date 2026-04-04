@@ -1,1 +1,1 @@
-{"root":["./src/server.ts","./src/config/prisma.ts","./src/controllers/authcontrollers.ts","./src/routes/authroutes.ts","./src/services/generatetoken.ts"],"version":"6.0.2"}
+{"root":["./src/server.ts","./src/config/prisma.ts","./src/controllers/authcontrollers.ts","./src/middleware/authmiddleware.ts","./src/routes/authroutes.ts","./src/services/generatetoken.ts"],"version":"6.0.2"}
