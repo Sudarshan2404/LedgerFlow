@@ -24,7 +24,15 @@ export const addRecord = async (req: Request, res: Response) => {
       data.date = new Date(date);
     }
 
-    prisma.records.create({ data });
+    const cdata = prisma.records.create({ data });
+
+    res
+      .status(200)
+      .json({
+        success: true,
+        data: data,
+        message: "Record created successfully",
+      });
   } catch (error) {
     console.error("An error occured while creating a new record");
     res

@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { Prisma } from "@prisma/client";
+import { Prisma, type Role } from "@prisma/client";
 import { email, number, parseAsync, success, z } from "zod";
 import prisma from "../config/prisma.js";
 import bcrypt from "bcrypt";
@@ -144,4 +144,32 @@ export const login = async (req: Request, res: Response) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     })
     .json({ success: true, token });
+};
+
+export const changerole = async (req: Request, res: Response) => {
+  try {
+    const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+    const { role } = req.body;
+
+    if (!id) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Missing user id" });
+    }
+
+    await prisma.user.update({
+      where: { id },
+      data: {
+        role: role,
+      },
+    });
+
+    res.status(200).json({
+      success: true,
+      message: `updated user with id: ${id} role to ${role} successfully`,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
 };
