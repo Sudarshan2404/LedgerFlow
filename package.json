@@ -90,7 +90,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsc -b && node ./dist/server.js"
+    "dev": "tsc -b && node ./dist/server.js",
+    "commit": "git add . && git commit -m \"%npm_config_msg%\""
   },
   "repository": {
     "type": "git",

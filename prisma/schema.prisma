@@ -29,7 +29,7 @@ model Records {
   amount    Float
   type      String   
   category  String
-  date      DateTime
+  date      DateTime @default(now())
   notes     String?
 
   userId    String

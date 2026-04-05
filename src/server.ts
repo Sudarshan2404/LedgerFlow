@@ -5,6 +5,7 @@ import Authroutes from "./routes/Authroutes.js";
 import jwt from "jsonwebtoken";
 import { success } from "zod";
 import { Authmiddleware } from "./middleware/authmiddleware.js";
+import { AnalystRole } from "./middleware/RoleMiddleware.js";
 
 dotenv.config();
 const app = Express();
@@ -14,7 +15,7 @@ app.use(cookieParser());
 
 app.use("/api/auth", Authroutes);
 
-app.get("/", Authmiddleware, (req, res) => {
+app.get("/", Authmiddleware, AnalystRole, (req, res) => {
   try {
     const JWT_SECRET: string | undefined = process.env.JWT_SECRET;
     if (!JWT_SECRET) {

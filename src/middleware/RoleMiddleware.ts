@@ -16,7 +16,7 @@ export const AnalystRole = async (
     }
 
     if (userRole != "ANALYST") {
-      return res.status(402).json({
+      return res.status(401).json({
         success: false,
         message: "You are not authorized to perform this action",
       });
@@ -44,7 +44,7 @@ export const AdminRole = async (
     }
 
     if (userRole != "ADMIN") {
-      return res.status(402).json({
+      return res.status(401).json({
         success: false,
         message: "You are not authorized to perform this action",
       });
