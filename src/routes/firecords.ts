@@ -1,10 +1,11 @@
 import { Router } from "express";
 import { login, register } from "../controllers/authControllers.js";
-import { AdminRole } from "../middleware/RoleMiddleware.js";
+import { AdminRole, allowRoles } from "../middleware/RoleMiddleware.js";
 import {
   addRecord,
   deleteRecord,
   getAllRecords,
+  getDashboard,
   getRecordbyId,
   updateRecord,
 } from "../controllers/crudControllers.js";
@@ -14,8 +15,24 @@ const router = Router();
 
 router.get("/records", Authmiddleware, getAllRecords);
 router.get("/getrecord/:id", Authmiddleware, getRecordbyId);
-router.post("/addrecords", Authmiddleware, AdminRole, addRecord);
-router.patch("/updaterecord", Authmiddleware, AdminRole, updateRecord);
-router.delete("/deleterecord", Authmiddleware, AdminRole, deleteRecord);
+router.post(
+  "/addrecords",
+  Authmiddleware,
+  allowRoles("ADMIN", "ANALYST"),
+  addRecord,
+);
+router.patch(
+  "/updaterecord",
+  Authmiddleware,
+  allowRoles("ADMIN", "ANALYST"),
+  updateRecord,
+);
+router.delete(
+  "/deleterecord",
+  Authmiddleware,
+  allowRoles("ADMIN", "ANALYST"),
+  deleteRecord,
+);
+router.get("/dashboard", Authmiddleware, getDashboard);
 
 export default router;

@@ -230,3 +230,64 @@ export const deleteRecord = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, message: "Internal server Error" });
   }
 };
+
+export const getDashboard = async (req: Request, res: Response) => {
+  try {
+    const userId = req.userId;
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    // 🔹 Fetch all records of user
+    const records = await prisma.records.findMany({
+      where: { userId },
+    });
+
+    // 🔹 Totals
+    let totalIncome = 0;
+    let totalExpense = 0;
+
+    for (const r of records) {
+      if (r.type === "income") totalIncome += r.amount;
+      if (r.type === "expense") totalExpense += r.amount;
+    }
+
+    const netBalance = totalIncome - totalExpense;
+
+    // 🔹 Category breakdown
+    const categoryMap: Record<string, number> = {};
+
+    for (const r of records) {
+      categoryMap[r.category] = (categoryMap[r.category] ?? 0) + r.amount;
+    }
+
+    // 🔹 Recent transactions (last 5)
+    const recent = await prisma.records.findMany({
+      where: { userId },
+      orderBy: { date: "desc" },
+      take: 5,
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        totalIncome,
+        totalExpense,
+        netBalance,
+        categoryBreakdown: categoryMap,
+        recentTransactions: recent,
+      },
+    });
+  } catch (error) {
+    console.error("Dashboard error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};

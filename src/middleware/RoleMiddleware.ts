@@ -54,3 +54,34 @@ export const AdminRole = async (
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+
+export const allowRoles = (...roles: string[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userRole = req.userRole;
+
+      if (!userRole) {
+        return res.status(401).json({
+          success: false,
+          message: "Unauthorized",
+        });
+      }
+
+      if (!roles.includes(userRole)) {
+        return res.status(403).json({
+          success: false,
+          message: "Forbidden: insufficient permissions",
+        });
+      }
+
+      next(); // ✅ VERY IMPORTANT
+    } catch (error) {
+      console.error("Error in allowRoles middleware:", error);
+
+      return res.status(500).json({
+        success: false,
+        message: "Internal server error",
+      });
+    }
+  };
+};
